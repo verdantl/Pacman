@@ -6,7 +6,6 @@ public class Dot extends Tile{
 
     private final boolean isSolid = false;
     private boolean hasDot;
-    private int[] coordinates;
 
     protected Dot(boolean hasDot) {
         super();
@@ -47,15 +46,5 @@ public class Dot extends Tile{
     public void changeColor() {
 
     }
-
-    public void setCoordinates(int[] coordinates){
-        this.coordinates = coordinates;
-    }
-
-    public int[] getCoordinates(){
-        return coordinates;
-    }
-
-
 
 }

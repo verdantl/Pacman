@@ -2,6 +2,7 @@ package com.GameState;
 
 import com.pacman_game.Animation;
 import com.pacman_game.Game;
+import com.pacman_game.Ghost;
 
 import java.awt.*;
 
@@ -32,8 +33,11 @@ public class DeathState extends GameState {
     @Override
     public void render(Graphics2D g) {
         if (original) {
-            if ( 500 < timer &&  timer <= 1300) {
+            if (500 < timer &&  timer <= 1300) {
                 game.getPacman().deathAnimation();
+            }
+            for (Ghost ghost: game.getGhosts()){
+                ghost.disappear();
             }
             game.getPlayState().render(g);
         } else {

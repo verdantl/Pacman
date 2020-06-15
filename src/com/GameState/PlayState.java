@@ -72,6 +72,7 @@ public class PlayState extends GameState{
             drawGhostEat(g);
         }
         pacman.render(g);
+        map.renderTunnels(g);
     }
 
     public void pause(){

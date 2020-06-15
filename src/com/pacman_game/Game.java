@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 public class Game implements Runnable{
 
@@ -18,8 +19,8 @@ public class Game implements Runnable{
 
     private BufferStrategy bs;
     private Graphics g;
-    private int pacX = 338;
-    private int pacY = 304;
+    private int pacX = 358;
+    private int pacY = 324;
     private Pacman pacman = new Pacman(this, pacX, pacY);
     private final int numGhosts = 4;
     private Ghost[] ghosts = new Ghost[numGhosts];
@@ -32,6 +33,7 @@ public class Game implements Runnable{
     private final Map map;
 
 
+
     public Game(String title, int width, int height){
         this.title = title;
         this.width = width;
@@ -41,7 +43,7 @@ public class Game implements Runnable{
             ghosts[i] = new Ghost(this, i);
         }
         keyManager = new KeyManager(this);
-        map = new Map("plan.txt");
+        map = new Map("new.txt");
         collisionDetector = new CollisionDetector(this, pacman);
         for (int i = 0; i < ghosts.length; i++){
             CollisionDetector temp = new CollisionDetector(this, ghosts[i]);
@@ -50,7 +52,6 @@ public class Game implements Runnable{
         }
         ghostManager = new GhostManager(ghosts);
         pacman.setCollisionDetector(collisionDetector);
-
     }
 
     private void init(){
@@ -128,13 +129,6 @@ public class Game implements Runnable{
 
     public void setPlayState(PlayState playState){
         this.playState = playState;
-    }
-    public int[] getPacmanCoordinates(){
-        return new int[]{pacX, pacY};
-    }
-
-    public CollisionDetector getGhostCollision(int i){
-        return ghostCollision[i];
     }
 
     public GhostManager getGhostManager(){

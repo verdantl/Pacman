@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 
@@ -34,12 +35,13 @@ public class Ghost implements Collidable {
     private String[] images = {"res/ghosts/green_ghost.png", "res/ghosts/pink_ghost.png", "res/ghosts/red_ghost.png",
             "res/ghosts/teal_ghost.png", "res/ghosts/scared_ghost.png", "res/ghosts/flashing_ghost.png",
             "res/ghosts/eyes.png"};
-    public int[][] starting = {{318, 204}, {338, 164}, {358, 204}, {338, 204}};
+    public int[][] starting = {{338, 224}, {358, 184}, {378, 224}, {358, 224}};
     private boolean stop = false;
     private boolean chase, scared, flashing, scatter, slow, chaseCenter;
     public boolean ate;
     private double dx = 0.5;
     private final Rectangle destination = new Rectangle(338, 204, Tile.SIZE, Tile.SIZE);
+    private BufferedImage deathImage;
 
     public Ghost(Game game, int id){
         this.game = game;
@@ -53,6 +55,11 @@ public class Ghost implements Collidable {
         bounds = new Rectangle(x - 3, y - 4, Tile.SIZE, Tile.SIZE);
         nextTiles = new ArrayList<>();
         loadImage();
+        try {
+            deathImage = ImageIO.read(new File("res/death/pacman_up6.png"));
+        } catch (IOException ignored){
+
+        }
     }
     public void reset(){
         x = starting[id][0];
@@ -99,31 +106,14 @@ public class Ghost implements Collidable {
             e.printStackTrace();
         }
     }
-    public Image getImage(){
-       return image;
+    public void teleport(int y){
+        this.y = 2 * (y - this.y) + this.y;
+        updateBounds();
+        moving = false;
     }
-
     public Rectangle getBounds(){
         return bounds;
     }
-
-//    private void updatePossibleDirections(){
-//        int pacmanX = pacman.getBounds().x;
-//        int pacmanY = pacman.getBounds().y;
-//        possibleDirections.clear();
-//        if (pacmanX > bounds.x){
-//            possibleDirections.add(3);
-//        }
-//        if (pacmanX < bounds.x){
-//            possibleDirections.add(1);
-//        }
-//        if (pacmanY < bounds.y){
-//            possibleDirections.add(0);
-//        }
-//        if (pacmanY > bounds.y){
-//            possibleDirections.add(2);
-//        }
-//    }
 
     private void updateMoving(){
         if (cd.canMove){
@@ -355,6 +345,10 @@ public class Ghost implements Collidable {
 
     public void render(Graphics g){
         g.drawImage(image, x, y, WIDTH, HEIGHT,null);
+        if (ate){
+            g.drawRect(nextTile.getCoordinates()[0], nextTile.getCoordinates()[1], Tile.SIZE, Tile.SIZE);
+            System.out.println(Arrays.toString(nextTile.getCoordinates()));
+        }
     }
 
     public boolean getMoving() {
@@ -409,5 +403,9 @@ public class Ghost implements Collidable {
             slow = true;
             loadImage();
         }
+    }
+
+    public void disappear(){
+        image = deathImage;
     }
 }

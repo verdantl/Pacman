@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 public class Wall extends Tile{
     private final boolean isSolid = true;
-    private int[] coordinates;
     public Color borderColor;
     public Color wallColor;
     private final ArrayList<Color> colors = new ArrayList<>();
@@ -38,14 +37,6 @@ public class Wall extends Tile{
     @Override
     public boolean isSolid() {
         return isSolid;
-    }
-
-    public void setCoordinates(int[] coordinates){
-        this.coordinates = coordinates;
-
-    }
-    public int[] getCoordinates(){
-        return coordinates;
     }
 
     @Override

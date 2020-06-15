@@ -1,19 +1,20 @@
 package com.pacman_game;
-
 import java.awt.*;
 
 public class CollisionDetector{
-    private Game game;
-    private Collidable object;
+    private final Game game;
+    private final Collidable object;
     private Tile nextTile;
     public boolean canMove;
     private final int bufferDistance = Tile.SIZE;
-    private Map map;
+    private final Map map;
+    private int[] midPoint;
 
     public CollisionDetector(Game game, Collidable object){
         this.game = game;
         map = game.getMap();
         this.object = object;
+        midPoint = map.getMidPoint();
 
     }
 
@@ -41,24 +42,32 @@ public class CollisionDetector{
         Rectangle bounds = object.getBounds();
         int[] coordinates = {bounds.x, bounds.y, bounds.x + bounds.width, bounds.y + bounds.height};
         Tile potNextTile;
-        if (i == 0){
-            potNextTile = map.getTile(coordinates[0], coordinates[1] - bufferDistance);
-        }
-        else if (i == 1){
-            potNextTile = map.getTile(coordinates[0] - bufferDistance, coordinates[1]);
-        }
-        else if (i == 2){
-            potNextTile = map.getTile(coordinates[0], coordinates[1] + bufferDistance);
-        }
-        else{
-            potNextTile = map.getTile(coordinates[0] + bufferDistance, coordinates[1]);
-        }
-        setCanMove(potNextTile);
-        if (!canMove){
-            continueMoving();
+        try {
+            if (i == 0) {
+                potNextTile = map.getTile(coordinates[0], coordinates[1] - bufferDistance);
+            } else if (i == 1) {
+                potNextTile = map.getTile(coordinates[0] - bufferDistance, coordinates[1]);
+            } else if (i == 2) {
+                potNextTile = map.getTile(coordinates[0], coordinates[1] + bufferDistance);
+            } else {
+                potNextTile = map.getTile(coordinates[0] + bufferDistance, coordinates[1]);
+            }
+            setCanMove(potNextTile);
+            if (!canMove){
+                continueMoving();
+            }
+        } catch (ArrayIndexOutOfBoundsException e){
+            teleport();
         }
 
+
+
     }
+
+    private void teleport(){
+        object.teleport(midPoint[1]);
+    }
+
     public void continueMoving(){
         int i = object.getDirection();
         Rectangle bounds = object.getBounds();

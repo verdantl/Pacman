@@ -14,11 +14,14 @@ public class Map {
     public static int DOTS;
     public static int eaten;
     public boolean flashing;
+    private Tunnel[] tunnels;
+    private int tunnelIndex = 0;
+    private int[] midPoint = new int[2];
 
-    //each subarray is a row
     public Map(String path){
         DOTS = 0;
         eaten = 0;
+        tunnels = new Tunnel[2];
         loadMap(path);
 
     }
@@ -41,6 +44,9 @@ public class Map {
         height = mapBuild.size();
 
         map = new Tile[height][width] ;
+        midPoint[0] = borderWidth + (width * Tile.SIZE / 2);
+        midPoint[1] = borderHeight + (height * Tile.SIZE / 2);
+
         for (int y = 0; y < height; y++){
             for (int x = 0; x < width; x++){
                 char character = mapBuild.get(y).charAt(x);
@@ -57,6 +63,10 @@ public class Map {
         eaten = 0;
         loadMap(path);
         flashing = false;
+    }
+
+    public int[] getMidPoint(){
+        return midPoint;
     }
 
     private Tile parser(char character){
@@ -76,10 +86,24 @@ public class Map {
             DOTS++;
             return new Energizer(true);
         }
+
+        else if (character == '*') {
+            Tunnel tunnel = new Tunnel();
+            tunnels[tunnelIndex] = tunnel;
+            tunnelIndex += 1;
+            return tunnel;
+        }
+
         return null;
     }
+    public void renderTunnels(Graphics2D g){
+        for (Tunnel tunnel: tunnels){
+            int[] coordinates = tunnel.getCoordinates();
+            tunnel.render(g, coordinates[0], coordinates[1]);
+        }
+    }
 
-    public Tile getTile(int x, int y){
+    public Tile getTile(int x, int y) throws ArrayIndexOutOfBoundsException{
         int newX = (x - borderWidth) / Tile.SIZE;
         int newY = (y - borderHeight) / Tile.SIZE;
         return map[newY][newX];

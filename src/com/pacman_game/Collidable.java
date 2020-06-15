@@ -12,4 +12,6 @@ public interface Collidable {
     int getNextDirection();
 
     Rectangle getBounds();
+    void teleport(int y);
+
 }

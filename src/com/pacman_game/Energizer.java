@@ -4,7 +4,6 @@ import java.awt.*;
 
 public class Energizer extends Tile {
     private final boolean isSolid = false;
-    private int[] coordinates;
     private boolean hasEnergizer;
     private boolean animate;
     private int timer;
@@ -44,16 +43,6 @@ public class Energizer extends Tile {
     @Override
     public boolean isSolid() {
         return isSolid;
-    }
-
-    @Override
-    public void setCoordinates(int[] ints) {
-        this.coordinates = ints;
-    }
-
-    @Override
-    public int[] getCoordinates() {
-        return coordinates;
     }
 
     @Override

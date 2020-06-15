@@ -42,6 +42,7 @@ public class GameOver extends GameState implements KeyListener {
             MenuState menuState = new MenuState(game);
             GameState.setCurrentState(menuState);
             PlayState playState = new PlayState(game);
+            GameState.gameOver = false;
             game.setPlayState(playState);
             game.getPacman().newGame();
         }

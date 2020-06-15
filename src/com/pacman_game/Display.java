@@ -1,5 +1,4 @@
 package com.pacman_game;
-
 import javax.swing.JFrame;
 import java.awt.*;
 

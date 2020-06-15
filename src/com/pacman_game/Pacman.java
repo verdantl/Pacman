@@ -106,6 +106,11 @@ public class Pacman implements Collidable{
             setThirdDirection(3);
         }
     }
+    public void teleport(int y){
+        this.y = 2 * (y - this.y) + this.y;
+        updateBounds();
+        moving = false;
+    }
 
     public int getNextDirection(){
         return nextDirection;
