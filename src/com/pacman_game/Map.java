@@ -21,7 +21,6 @@ public class Map {
     public int mapHeight;
 
     public Map(String path, int borderWidth, int borderHeight){
-        DOTS = 0;
         eaten = 0;
         tunnelIndex = 0;
         tunnels = new Tunnel[2];
@@ -32,7 +31,7 @@ public class Map {
     }
 
     private void loadMap(String path){
-
+        DOTS = 0;
         ArrayList<String> mapBuild = new ArrayList<>();
         try{
             BufferedReader br = new BufferedReader(new FileReader(path));

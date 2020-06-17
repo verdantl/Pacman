@@ -33,12 +33,15 @@ public class DeathState extends GameState {
     @Override
     public void render(Graphics2D g) {
         if (original) {
-            if (500 < timer &&  timer <= 1400) {
-                game.getPacman().deathAnimation();
+            if (500 < timer) {
+                for (Ghost ghost: game.getGhosts()){
+                    ghost.disappear();
+                }
+                if (timer <= 1450) {
+                    game.getPacman().deathAnimation();
+                }
             }
-            for (Ghost ghost: game.getGhosts()){
-                ghost.disappear();
-            }
+
             game.getPlayState().render(g);
         } else {
             if (GameState.gameOver) {

@@ -20,6 +20,7 @@ public class PlayState extends GameState{
     public static int scoreCounter = 0;
     private boolean pause;
     private int[] readyCoordinates;
+    public HighScore highScore;
 
     public PlayState(Game game) {
         super(game);
@@ -34,6 +35,7 @@ public class PlayState extends GameState{
         SCOREX = border[0] + 40;
         SCOREY = border[1];
         lives = new int[]{border[0] + 30, border[1] + map.mapHeight * Tile.SIZE + 10};
+        highScore = new HighScore();
 
     }
     public static void resetScoreCounter(){
@@ -64,6 +66,7 @@ public class PlayState extends GameState{
             GameState.setCurrentState(new ClearedMap(game));
         }
         else{
+            highScore.update(pacman.getScore());
             pacman.update();
             updateGhosts();
             map.update();
@@ -94,6 +97,8 @@ public class PlayState extends GameState{
         g.setFont(scoreFont);
         g.setColor(Color.WHITE);
         g.drawString(String.valueOf(pacman.getScore()), SCOREX, SCOREY);
+        g.drawString("HIGH", SCOREX + 75, SCOREY - 18);
+        g.drawString(String.valueOf(highScore.highScore), SCOREX + 100, SCOREY);
         try{
             Image liveImage = ImageIO.read(new File("res/pacman/pacman.png"));
             for (int i = 0; i < pacman.getLives(); i++) {
@@ -135,6 +140,7 @@ public class PlayState extends GameState{
     public void death(){
         if (pacman.getLives() == 0) {
             GameState.gameOver = true;
+            highScore.saveHighScore();
         }
             GameState.setCurrentState(new DeathState(game));
     }

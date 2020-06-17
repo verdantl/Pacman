@@ -364,7 +364,6 @@ public class Ghost implements Collidable {
         g.drawImage(image, x, y, WIDTH, HEIGHT,null);
         if (ate){
             System.out.println(bounds.x);
-            System.out.println(bounds.y);
         }
     }
 

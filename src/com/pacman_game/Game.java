@@ -172,7 +172,6 @@ public class Game implements Runnable{
 
     public void setStartHandler(int i){
         currentHandler = startHandlers[i];
-        System.out.println(i + 500);
         setUpMap();
     }
 
