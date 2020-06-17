@@ -18,7 +18,7 @@ public class MapSelection {
         this.name = name;
         this.map = map.getTransparentClone();
         this.coordinates = coordinates;
-        size = new int[]{45 * name.length(), 40};
+        size = new int[]{40 * name.length(), 40};
         hover = false;
         selected = false;
     }
@@ -44,7 +44,6 @@ public class MapSelection {
     }
 
     public void render(Graphics2D g){
-
         if (hover){
             g.setColor(Color.WHITE);
         }
@@ -55,10 +54,11 @@ public class MapSelection {
             g.fillRect(coordinates[0], coordinates[1], size[0], size[1]);
             g.setColor(Color.BLACK);
             g.fillRect(coordinates[0] + 3, coordinates[1] + 3, size[0] - 6, size[1] - 6);
-//            map.render(g);
+            map.render(g);
         }
+
         g.setColor(Color.MAGENTA);
         g.setFont(FONT);
-        g.drawString(name, coordinates[0], coordinates[1] + FONT.getSize());
+        g.drawString(name, coordinates[0] + 10, coordinates[1] + FONT.getSize());
     }
 }

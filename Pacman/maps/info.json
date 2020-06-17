@@ -6,7 +6,7 @@
   "GAME OVER":  [296, 279],
   "SPACE":  [121, 445],
   "borderwidth": 15, "borderheight": 80,
-  "ghost destination": [338, 204]},
+  "ghost destination": [335, 204]},
 
 
 
@@ -16,5 +16,5 @@
     "GAME OVER":  [286, 314],
     "SPACE":  [121, 425],
     "borderwidth": 125, "borderheight": 60,
-    "ghost destination": [328, 264]}
+    "ghost destination": [325, 264]}
 }

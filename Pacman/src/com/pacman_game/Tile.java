@@ -21,6 +21,9 @@ public abstract class Tile {
 
     public abstract int eatDot();
     public abstract void changeColor();
+    public void setColor(Color color){
+
+    }
 
 }
 

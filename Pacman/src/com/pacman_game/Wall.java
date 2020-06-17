@@ -44,5 +44,10 @@ public class Wall extends Tile{
         return 0;
     }
 
+    @Override
+    public void setColor(Color color){
+        wallColor = color;
+    }
+
 
 }

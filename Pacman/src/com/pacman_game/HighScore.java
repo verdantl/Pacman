@@ -26,7 +26,7 @@ public class HighScore {
     }
 
     public void saveHighScore(){
-        try {writer = new FileWriter(new File("res/high_score.txt"));
+        try {writer = new FileWriter(new File("highscore/high_score.txt"));
             writer.write(String.valueOf(highScore));
             writer.close();
 

@@ -40,7 +40,7 @@ public class Ghost implements Collidable {
     private boolean chase, scared, flashing, scatter, slow, chaseCenter;
     public boolean ate;
     private double dx = 0.5;
-    public static Rectangle destination = new Rectangle(338, 204, Tile.SIZE, Tile.SIZE);
+    public static Rectangle destination;
     private BufferedImage deathImage;
 
     public Ghost(Game game, int id){
@@ -71,11 +71,6 @@ public class Ghost implements Collidable {
         loadImage();
         cd.reset();
         cd.update();
-    }
-    public void setCoordinates(int x, int y){
-        this.x = x;
-        this.y = y;
-        updateBounds();
     }
 
     private void slowDown(){
@@ -363,7 +358,6 @@ public class Ghost implements Collidable {
     public void render(Graphics g){
         g.drawImage(image, x, y, WIDTH, HEIGHT,null);
         if (ate){
-            System.out.println(bounds.x);
         }
     }
 

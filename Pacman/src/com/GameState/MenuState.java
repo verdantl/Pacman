@@ -12,18 +12,20 @@ import java.util.Arrays;
 public class MenuState extends GameState implements KeyListener, MouseListener, MouseInputListener {
     Font titleFont;
     Font smallFont;
-    private final int titleX = 170;
-    private final int titleY = 150;
+    private final int titleX = 180;
+    private final int titleY = 60;
     private final int smallX = 250;
-    private final int smallY = 200;
+    private final int smallY = 600;
     private int opacity = 249;
     private int changeOpacity = 5;
     private Color smallColor = Color.WHITE;
-    private Color[] titleColors = new Color[2];
+    private Color[] titleColors = new Color[4];
     private int colorIndex = 0;
     private boolean mapChosen = true;
     private MapSelection[] mapSelections = new MapSelection[2];
     private static int currentSelection;
+    private String message;
+    private boolean selected;
 
     public static int num = 0;
 
@@ -32,17 +34,20 @@ public class MenuState extends GameState implements KeyListener, MouseListener, 
         super(game);
         titleFont = new Font("Goudy Stout", Font.BOLD, 45);
         smallFont = new Font("Goudy Stout", Font.PLAIN, 10);
-        titleColors[0] = Color.RED;
+        titleColors[0] = Color.YELLOW;
         titleColors[1] = Color.ORANGE;
+        titleColors[2] = Color.green;
+        titleColors[3] = Color.RED;
         currentSelection = 0;
         setMapSelections();
         num++;
+        message = "Choose a map";
     }
 
     private void setMapSelections(){
         StartHandler[] startHandlers = new StartHandler[]{game.getStartHandlers(0), game.getStartHandlers(1)};
-        String[] names = new String[]{"New", "Classic"};
-        int[][] coordinates = new int[][]{{90, 300}, {350, 300}};
+        String[] names = new String[]{"Boxy", "Classic"};
+        int[][] coordinates = new int[][]{{100, 300}, {365, 300}};
         for (int i = 0; i < startHandlers.length ; i++){
             mapSelections[i] = new MapSelection(names[i], new Map(startHandlers[i].mapPath,
                     startHandlers[i].getBorder()[0], startHandlers[i].getBorder()[1]), coordinates[i]);
@@ -52,21 +57,39 @@ public class MenuState extends GameState implements KeyListener, MouseListener, 
     @Override
     public void update() {
         stringOpacity();
+        changeIndex();
+        if (selected){
+            message = "Press s to start";
+            smallColor = Color.yellow;
+        }
+        else{
+            message = "Choose a map";
+            smallColor = Color.white;
+        }
     }
 
     private void stringOpacity(){
         if (opacity <= 5 || opacity >= 250){
             changeOpacity = - changeOpacity;
-            colorIndex = 1 - colorIndex;
         }
             opacity -= changeOpacity;
 
     }
+    private void changeIndex(){
+        if ((opacity / 10) % 3 == 0){
+            Color temp = titleColors[1];
+            titleColors[1] = titleColors[0];
+            titleColors[0] = titleColors[3];
+            titleColors[3] = titleColors[2];
+            titleColors[2] = temp;
+        }
+    }
 
     @Override
     public void render(Graphics2D g) {
-        renderWords(g);
         renderMapSelections(g);
+        renderWords(g);
+
     }
 
     private void renderMapSelections(Graphics2D g){
@@ -76,17 +99,22 @@ public class MenuState extends GameState implements KeyListener, MouseListener, 
     }
 
     private void renderWords(Graphics2D g){
-        g.setFont(titleFont);
-        g.setColor(titleColors[colorIndex]);
-        g.drawString("PACMAN", titleX + 5, titleY + 5);
-        g.setColor(titleColors[1 - colorIndex]);
-        g.drawString("PACMAN", titleX, titleY);
+        renderTitle(g);
         if (mapChosen) {
             g.setFont(smallFont);
             g.setColor(new Color(smallColor.getRed(), smallColor.getGreen(), smallColor.getBlue(), opacity));
-            g.drawString("Press s to start", smallX, smallY);
+            g.drawString(message, smallX, smallY);
         }
     }
+
+    private void renderTitle(Graphics2D g){
+        g.setFont(titleFont);
+        for (int i = 0; i < titleColors.length; i++){
+            g.setColor(titleColors[i]);
+            g.drawString("PACMAN", titleX + 2 * i, titleY + 2 * i);
+        }
+    }
+
     @Override
     public void keyTyped(KeyEvent e) {
 
@@ -94,12 +122,14 @@ public class MenuState extends GameState implements KeyListener, MouseListener, 
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_S){
-            game.setStartHandler(currentSelection);
-            game.newgame();
-            game.setPlayState(new PlayState(game));
-            game.getPlayState().resetTimer();
-            GameState.setCurrentState(game.getPlayState());
+        if (selected) {
+            if (e.getKeyCode() == KeyEvent.VK_S) {
+                game.setStartHandler(currentSelection);
+                game.newgame();
+                game.setPlayState(new PlayState(game));
+                game.getPlayState().resetTimer();
+                GameState.setCurrentState(game.getPlayState());
+            }
         }
     }
 
@@ -109,6 +139,9 @@ public class MenuState extends GameState implements KeyListener, MouseListener, 
     }
 
     private MapSelection checkMapSelection(Point coordinates, boolean selected){
+        if (selected){
+            this.selected = false;
+        }
         for (MapSelection mapSelection: mapSelections) {
             if (selected) {
                 mapSelection.resetSelected();
@@ -125,6 +158,7 @@ public class MenuState extends GameState implements KeyListener, MouseListener, 
                     coordinates.y <= mapSelection.coordinates[1] + mapSelection.size[1]) {
                 if (selected){
                     currentSelection = i;
+                    this.selected = true;
                 }
                 return mapSelection;
             }
