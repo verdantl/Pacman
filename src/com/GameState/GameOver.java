@@ -7,10 +7,14 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class GameOver extends GameState implements KeyListener {
-
+    int[] gameOverCoordinates;
+    int[] spaceCoordinates;
     public GameOver(Game game){
         super(game);
         game.startOverListener(this);
+        gameOverCoordinates = game.getStartHandler().getGameOverCoordinates();
+        spaceCoordinates = game.getStartHandler().getSpaceCoordinates();
+
     }
 
     @Override
@@ -20,13 +24,15 @@ public class GameOver extends GameState implements KeyListener {
 
     @Override
     public void render(Graphics2D g) {
-        game.getPlayState().render(g);
+        if (gameOver) {
+            game.getPlayState().render(g);
+        }
         Font gameOver = new Font("Goudy Stout", Font.PLAIN, 11);
         g.setFont(gameOver);
         g.setColor(Color.RED);
-        g.drawString("GAME OVER", 296, 259);
+        g.drawString("GAME OVER", gameOverCoordinates[0], gameOverCoordinates[1]);
         g.setColor(Color.WHITE);
-        g.drawString("Press SPACE to go back to the Menu screen", 121, 425);
+        g.drawString("Press SPACE to go back to the Menu screen", spaceCoordinates[0], spaceCoordinates[1]);
     }
 
     @Override
@@ -37,14 +43,13 @@ public class GameOver extends GameState implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_SPACE){
-            game.reset();
-            game.getMap().reset("plan.txt");
+            GameState.gameOver = false;
             MenuState menuState = new MenuState(game);
             GameState.setCurrentState(menuState);
-            PlayState playState = new PlayState(game);
-            GameState.gameOver = false;
-            game.setPlayState(playState);
-            game.getPacman().newGame();
+            game.setMenuState(menuState);
+            game.resetMouseListener();
+            game.reset();
+
         }
     }
 

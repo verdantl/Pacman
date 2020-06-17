@@ -65,7 +65,12 @@ public class CollisionDetector{
     }
 
     private void teleport(){
-        object.teleport(midPoint[1]);
+        if (map.teleportHorizontal){
+            object.teleportX(midPoint[0]);
+        }
+        else {
+            object.teleportY(midPoint[1]);
+        }
     }
 
     public void continueMoving(){

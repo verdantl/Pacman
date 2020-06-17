@@ -19,18 +19,23 @@ public class Game implements Runnable{
 
     private BufferStrategy bs;
     private Graphics g;
-    private int pacX = 358;
-    private int pacY = 324;
-    private Pacman pacman = new Pacman(this, pacX, pacY);
+    private int pacX;
+    private int pacY;
+    private Pacman pacman;
     private final int numGhosts = 4;
     private Ghost[] ghosts = new Ghost[numGhosts];
+    public int[][] ghostStarting;
     private GhostManager ghostManager;
     private MenuState menuState;
     private PlayState playState;
     private CollisionDetector collisionDetector;
     private CollisionDetector[] ghostCollision = new CollisionDetector[numGhosts];
-    private final KeyManager keyManager;
-    private final Map map;
+    private KeyManager keyManager;
+    private Map map;
+    private StartHandler startHandler = new StartHandler("map1");
+    private StartHandler startHandler2 = new StartHandler("map2");
+    private StartHandler currentHandler;
+    private StartHandler[] startHandlers;
 
 
 
@@ -39,11 +44,28 @@ public class Game implements Runnable{
         this.width = width;
         this.height = height;
         display = new Display(title, width, height);
+//        startHandler = new StartHandler("map1");
+//        startHandler2 = new StartHandler("map2");
+        startHandlers = new StartHandler[2];
+        startHandlers[0] = startHandler;
+        startHandlers[1] = startHandler2;
+        currentHandler = startHandlers[0];
+        setUpMap();
+
+    }
+
+    public void setUpMap(){
+        pacX = currentHandler.getPacCoordinates()[0];
+        pacY = currentHandler.getPacCoordinates()[1];
+        pacman = new Pacman(this, pacX, pacY);
+        Ghost.setStarting(currentHandler.getGhostCoordinates());
+        Ghost.setDestination(currentHandler.getGhostDestination());
         for (int i = 0; i < ghosts.length; i++){
             ghosts[i] = new Ghost(this, i);
         }
         keyManager = new KeyManager(this);
-        map = new Map("new.txt");
+
+        map = new Map(currentHandler.mapPath, currentHandler.getBorder()[0], currentHandler.getBorder()[1]);
         collisionDetector = new CollisionDetector(this, pacman);
         for (int i = 0; i < ghosts.length; i++){
             CollisionDetector temp = new CollisionDetector(this, ghosts[i]);
@@ -52,6 +74,7 @@ public class Game implements Runnable{
         }
         ghostManager = new GhostManager(ghosts);
         pacman.setCollisionDetector(collisionDetector);
+        setUpKeys();
     }
 
     private void init(){
@@ -60,8 +83,16 @@ public class Game implements Runnable{
         menuState = new MenuState(this);
         playState = new PlayState(this);
         display.getFrame().addKeyListener(menuState);
+        display.getCanvas().addMouseListener(menuState);
+        display.getCanvas().addMouseMotionListener(menuState);
         GameState.setCurrentState(menuState);
 
+    }
+
+    private void setUpKeys(){
+        display.getFrame().removeKeyListener(keyManager);
+        keyManager = new KeyManager(this);
+        display.getFrame().addKeyListener(keyManager);
     }
 
     public void startOverListener(GameOver gameOver){
@@ -134,6 +165,21 @@ public class Game implements Runnable{
     public GhostManager getGhostManager(){
         return ghostManager;
     }
+
+    public StartHandler getStartHandler(){
+        return currentHandler;
+    }
+
+    public void setStartHandler(int i){
+        currentHandler = startHandlers[i];
+        System.out.println(i + 500);
+        setUpMap();
+    }
+
+    public StartHandler getStartHandlers(int i){
+        setStartHandler(i);
+        return startHandlers[i];
+    }
     public void freeze(){
         pacman.stop();
         for (Ghost g: ghosts){
@@ -146,7 +192,22 @@ public class Game implements Runnable{
             g.reset();
         }
         ghostManager.reset();
+    }
 
+    public void setMenuState(MenuState menuState){
+        this.menuState = menuState;
+    }
+
+    public void newgame(){
+        setUpMap();
+        setUpKeys();
+    }
+
+    public void resetMouseListener(){
+        display.getCanvas().removeMouseListener(display.getCanvas().getMouseListeners()[0]);
+        display.getCanvas().removeMouseMotionListener(display.getCanvas().getMouseMotionListeners()[0]);
+        display.getCanvas().addMouseListener((MenuState) GameState.getCurrentState());
+        display.getCanvas().addMouseMotionListener((MenuState) GameState.getCurrentState());
     }
     public synchronized void start(){
         if (running){
@@ -179,17 +240,6 @@ public class Game implements Runnable{
     }
     public void drawGhostEat(){
         playState.pause();
-    }
-
-    public void drawDeath(BufferedImage image, int x, int y){
-        BufferStrategy tempBS = display.getCanvas().getBufferStrategy();
-        Graphics2D temp = (Graphics2D) tempBS.getDrawGraphics();
-        System.out.println(Arrays.toString(new int[]{x, y}));
-        g.clearRect(x, y, 15, 15);
-        temp.drawImage(image, x, y, Tile.SIZE, Tile.SIZE, null);
-        tempBS.show();
-        g.dispose();
-
     }
 
     private void render() {

@@ -18,7 +18,7 @@ public class Pacman implements Collidable{
     private int direction = 3; // 0 is up, 1, is left, 2, is down, 3 is right
     private int nextDirection = 3;
     private int thirdDirection = 3;
-
+    private int[] startingPos = new int[2];
     private BufferedImage image;
     private Game game;
     protected Rectangle bounds;
@@ -34,6 +34,8 @@ public class Pacman implements Collidable{
         this.cd = game.getCollisionDetector();
         this.x = x;
         this.y = y;
+        startingPos[0] = x;
+        startingPos[1] = y;
         lives = 3;
         score = 0;
         bounds = new Rectangle(x - 3, y - 4, Tile.SIZE, Tile.SIZE);
@@ -51,6 +53,7 @@ public class Pacman implements Collidable{
                 "res/death/pacman_up5-30.png", "res/death/pacman_up5-35.png", "res/death/pacman_up6.png",
                 "res/death/pacman_up6.png", "res/death/pacman_up6.png", "res/death/pacman_up6.png"}});
         deathAnimation.setDirection(0);
+        deathAnimation.setLoop(false);
         loadImage();
     }
 
@@ -77,8 +80,8 @@ public class Pacman implements Collidable{
 
     public void reset(){
         stop = false;
-        x = 338;
-        y = 304;
+        x = startingPos[0];
+        y = startingPos[1];
         direction = 3;
         nextDirection = 3;
         thirdDirection = 3;
@@ -106,7 +109,12 @@ public class Pacman implements Collidable{
             setThirdDirection(3);
         }
     }
-    public void teleport(int y){
+    public void teleportX(int x){
+        this.x = 2 * (x - this.x) + this.x;
+        updateBounds();
+        moving = false;
+    }
+    public void teleportY(int y){
         this.y = 2 * (y - this.y) + this.y;
         updateBounds();
         moving = false;

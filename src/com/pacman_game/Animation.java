@@ -10,6 +10,7 @@ public class Animation {
     private long lastTime, timer;
     private BufferedImage[][] frames;
     private int direction;
+    private boolean loop = true;
 
     public Animation(int speed, String[][] frames){
         this.speed = speed;
@@ -29,6 +30,10 @@ public class Animation {
                     e.printStackTrace();
                 }
         }
+    }
+
+    public void setLoop(boolean loop){
+        this.loop = loop;
     }
 
     public void resetTimer(){
@@ -54,7 +59,12 @@ public class Animation {
             index++;
             timer = 0;
             if (index >= frames[direction].length){
-                index = 0;
+                if (loop) {
+                    index = 0;
+                }
+                else{
+                    index -= 1;
+                }
             }
         }
     }

@@ -12,20 +12,29 @@ public class PlayState extends GameState{
     private Pacman pacman;
     private Ghost[] ghosts;
     private Map map;
-    private int SCOREX = 75;
-    private int SCOREY = 70;
+    private int SCOREX;
+    private int SCOREY;
+    private int[] lives;
     private boolean starting;
     private final int SPEED = 1000;
     public static int scoreCounter = 0;
     private boolean pause;
+    private int[] readyCoordinates;
 
     public PlayState(Game game) {
         super(game);
+
         pacman = game.getPacman();
         ghosts = game.getGhosts();
         map = game.getMap();
         starting = false;
         pause = false;
+        readyCoordinates = game.getStartHandler().getReadyCoordinates();
+        int[] border = game.getStartHandler().getBorder();
+        SCOREX = border[0] + 40;
+        SCOREY = border[1];
+        lives = new int[]{border[0] + 30, border[1] + map.mapHeight * Tile.SIZE + 10};
+
     }
     public static void resetScoreCounter(){
         scoreCounter = 0;
@@ -51,7 +60,7 @@ public class PlayState extends GameState{
         }
         else if (Map.eaten == Map.DOTS){
             Map.eaten = 0;
-            GameState.rounds ++;
+            GameState.rounds++;
             GameState.setCurrentState(new ClearedMap(game));
         }
         else{
@@ -72,7 +81,7 @@ public class PlayState extends GameState{
             drawGhostEat(g);
         }
         pacman.render(g);
-        map.renderTunnels(g);
+//        map.renderTunnels(g);
     }
 
     public void pause(){
@@ -81,22 +90,28 @@ public class PlayState extends GameState{
     }
 
     private void drawAddOn(Graphics2D g) {
-        Font scoreFont = new Font("Goudy Stout", Font.PLAIN, 15);
+        Font scoreFont = new Font("Goudy Stout", Font.PLAIN, 14);
         g.setFont(scoreFont);
         g.setColor(Color.WHITE);
         g.drawString(String.valueOf(pacman.getScore()), SCOREX, SCOREY);
         try{
-            Image lives = ImageIO.read(new File("res/pacman/pacman.png"));
+            Image liveImage = ImageIO.read(new File("res/pacman/pacman.png"));
             for (int i = 0; i < pacman.getLives(); i++) {
-                g.drawImage(lives, 50 + 25 * i, 390, 15, 15, null);
+                g.drawImage(liveImage, lives[0] + 25 * i, lives[1], 15, 15, null);
             }
         } catch(IOException e){
             e.printStackTrace();
         }
         if (!starting && GameState.getCurrentState() == this){
-            g.drawString("READY", 301, 259);
+            g.drawString("READY", readyCoordinates[0], readyCoordinates[1]);
         }
 
+    }
+
+    public void removeGhosts(){
+        for (Ghost g: ghosts){
+            g.disappear();
+        }
     }
     public void drawGhostEat(Graphics2D g){
         Font ghostFont = new Font("Garamond", Font.PLAIN, 12);
@@ -118,7 +133,7 @@ public class PlayState extends GameState{
         }
     }
     public void death(){
-        if (pacman.getLives() < 0) {
+        if (pacman.getLives() == 0) {
             GameState.gameOver = true;
         }
             GameState.setCurrentState(new DeathState(game));

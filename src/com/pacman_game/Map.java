@@ -8,20 +8,25 @@ import java.util.ArrayList;
 
 public class Map {
     private int width, height;
-    private int borderWidth = 35;
-    private int borderHeight = 80;
+    private int borderWidth;
+    private int borderHeight;
     private Tile[][] map;
     public static int DOTS;
     public static int eaten;
     public boolean flashing;
     private Tunnel[] tunnels;
-    private int tunnelIndex = 0;
+    private int tunnelIndex;
     private int[] midPoint = new int[2];
+    public boolean teleportHorizontal;
+    public int mapHeight;
 
-    public Map(String path){
+    public Map(String path, int borderWidth, int borderHeight){
         DOTS = 0;
         eaten = 0;
+        tunnelIndex = 0;
         tunnels = new Tunnel[2];
+        this.borderWidth = borderWidth;
+        this.borderHeight = borderHeight;
         loadMap(path);
 
     }
@@ -56,17 +61,23 @@ public class Map {
                 map[y][x].setCoordinates(new int[]{x * Tile.SIZE + borderWidth, y * Tile.SIZE + borderHeight});
                 }
             }
-
+        setTeleportHorizontal();
+        mapHeight = map.length;
         }
 
     public void reset(String path){
         eaten = 0;
+        tunnelIndex = 0;
         loadMap(path);
         flashing = false;
     }
 
     public int[] getMidPoint(){
         return midPoint;
+    }
+
+    private void setTeleportHorizontal(){
+        teleportHorizontal = tunnels[0].getCoordinates()[0] != tunnels[1].getCoordinates()[0];
     }
 
     private Tile parser(char character){
@@ -130,5 +141,11 @@ public class Map {
                 map[y][x].render(g, coordinates[0], coordinates[1]);
             }
         }
+        g.setColor(Color.black);
+        g.drawRect(borderWidth, borderHeight, map.length * Tile.SIZE, map[0].length * Tile.SIZE);
+    }
+
+    public Map getTransparentClone(){
+        return this;
     }
 }

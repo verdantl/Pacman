@@ -35,12 +35,12 @@ public class Ghost implements Collidable {
     private String[] images = {"res/ghosts/green_ghost.png", "res/ghosts/pink_ghost.png", "res/ghosts/red_ghost.png",
             "res/ghosts/teal_ghost.png", "res/ghosts/scared_ghost.png", "res/ghosts/flashing_ghost.png",
             "res/ghosts/eyes.png"};
-    public int[][] starting = {{338, 224}, {358, 184}, {378, 224}, {358, 224}};
+    public static int[][] starting;
     private boolean stop = false;
     private boolean chase, scared, flashing, scatter, slow, chaseCenter;
     public boolean ate;
     private double dx = 0.5;
-    private final Rectangle destination = new Rectangle(338, 204, Tile.SIZE, Tile.SIZE);
+    public static Rectangle destination = new Rectangle(338, 204, Tile.SIZE, Tile.SIZE);
     private BufferedImage deathImage;
 
     public Ghost(Game game, int id){
@@ -58,9 +58,9 @@ public class Ghost implements Collidable {
         try {
             deathImage = ImageIO.read(new File("res/death/pacman_up6.png"));
         } catch (IOException ignored){
-
         }
     }
+
     public void reset(){
         x = starting[id][0];
         y = starting[id][1];
@@ -72,7 +72,11 @@ public class Ghost implements Collidable {
         cd.reset();
         cd.update();
     }
-
+    public void setCoordinates(int x, int y){
+        this.x = x;
+        this.y = y;
+        updateBounds();
+    }
 
     private void slowDown(){
         SPEED += dx;
@@ -80,7 +84,13 @@ public class Ghost implements Collidable {
             SPEED = 0.5;
         }
     }
+    public static void setStarting(int[][] start){
+        starting = start;
+    }
 
+    public static void setDestination(int[] destinationCoordinates){
+        destination = new Rectangle(destinationCoordinates[0], destinationCoordinates[1], Tile.SIZE, Tile.SIZE);
+    }
     public void setCollisionDetector(CollisionDetector cd){
         this.cd = cd;
     }
@@ -106,7 +116,14 @@ public class Ghost implements Collidable {
             e.printStackTrace();
         }
     }
-    public void teleport(int y){
+
+    public void teleportX(int x){
+        this.x = 2 * (x - this.x) + this.x;
+        updateBounds();
+        moving = false;
+    }
+
+    public void teleportY(int y){
         this.y = 2 * (y - this.y) + this.y;
         updateBounds();
         moving = false;
@@ -346,8 +363,8 @@ public class Ghost implements Collidable {
     public void render(Graphics g){
         g.drawImage(image, x, y, WIDTH, HEIGHT,null);
         if (ate){
-            g.drawRect(nextTile.getCoordinates()[0], nextTile.getCoordinates()[1], Tile.SIZE, Tile.SIZE);
-            System.out.println(Arrays.toString(nextTile.getCoordinates()));
+            System.out.println(bounds.x);
+            System.out.println(bounds.y);
         }
     }
 

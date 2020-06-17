@@ -1,0 +1,20 @@
+
+{
+  "map1": {"pacman coordinates": [338, 324],
+    "ghost coordinates":  [[318, 224], [338, 184], [358, 224], [338, 224]],
+  "READY": [301, 279],
+  "GAME OVER":  [296, 279],
+  "SPACE":  [121, 445],
+  "borderwidth": 15, "borderheight": 80,
+  "ghost destination": [338, 204]},
+
+
+
+  "map2": {"pacman coordinates": [328, 384],
+    "ghost coordinates":  [[308, 264], [328, 224], [348, 264], [328, 264]],
+    "READY": [291, 314],
+    "GAME OVER":  [286, 314],
+    "SPACE":  [121, 425],
+    "borderwidth": 125, "borderheight": 60,
+    "ghost destination": [328, 264]}
+}

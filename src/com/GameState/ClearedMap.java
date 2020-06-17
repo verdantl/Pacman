@@ -15,6 +15,7 @@ public class ClearedMap extends GameState {
 
     public ClearedMap(Game game) {
         super(game);
+        game.getPlayState().removeGhosts();
         newMap = false;
         timer = 0;
         flashtimer = 0;
@@ -26,7 +27,7 @@ public class ClearedMap extends GameState {
     public void update() {
         if (newMap) {
             game.reset();
-            game.getMap().reset("plan.txt");
+            game.getMap().reset(game.getStartHandler().mapPath);
             PlayState playState = new PlayState(game);
             GameState.setCurrentState(playState);
             game.setPlayState(playState);

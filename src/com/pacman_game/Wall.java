@@ -10,9 +10,9 @@ public class Wall extends Tile{
     private final ArrayList<Color> colors = new ArrayList<>();
     protected Wall() {
         super();
-        borderColor = Color.BLUE;
-        wallColor = Color.BLACK;
-        colors.add(Color.BLACK);
+        borderColor = Color.BLACK;
+        wallColor = Color.BLUE;
+        colors.add(Color.BLUE);
         colors.add(Color.WHITE);
     }
 
